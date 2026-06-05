@@ -1,0 +1,13 @@
+# OneDrive / OS-skräp
+*.tmp
+~$*
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+
+# Claude
+.claude/
