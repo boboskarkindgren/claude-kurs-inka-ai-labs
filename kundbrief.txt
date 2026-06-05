@@ -1,0 +1,49 @@
+KUNDBRIEF – Reinholt Logistik AB
+=================================
+
+OM OSS
+------
+Reinholt Logistik AB är ett medelstort svenskt logistikföretag med huvudkontor i Göteborg.
+Vi har 280 anställda och hanterar distributions- och lagerflöden för e-handelsföretag och
+detaljhandelskedjor i Norden. Vi omsätter ca 320 MSEK per år och befinner oss i en
+tillväxtfas där vi precis tagit in två nya storkundsavtal.
+
+VAD VI BEHÖVER HJÄLP MED
+-------------------------
+Vi har börjat använda AI på lite olika håll – några medarbetare använder ChatGPT,
+vi testade ett AI-verktyg för ruttoptimering förra året – men det har blivit splittrat
+och vi saknar en röd tråd. Vi vet att det finns mer att hämta, men vi vet inte var vi
+ska börja eller hur vi ska prioritera.
+
+Vi söker en partner som kan hjälpa oss att:
+1. Kartlägga var AI faktiskt kan göra skillnad i vår verksamhet (inte bara coolt, utan lönsamt)
+2. Ta fram en konkret AI-strategi med prioriterade use cases
+3. Börja implementera minst ett pilotprojekt under hösten 2026
+
+Vi är särskilt intresserade av: automatisering av administration, AI-stöd för
+kundservice/ärendehantering och smartare resursplanering.
+
+MÅLGRUPP FÖR PRESENTATIONEN
+-----------------------------
+Interna beslutsfattare: VD, COO och IT-chef. Alla tre är pragmatiska – de vill se
+konkreta exempel, ROI-resonemang och en realistisk tidsplan. De är skeptiska mot
+buzzwords och vill inte ha en säljpitch, utan ett trovärdigt partnerskap.
+
+ANVÄNDNINGSOMRÅDE
+-----------------
+Presentationen ska användas vid ett inledande möte fredagen den 13 juni 2026.
+Syftet är att visa att vi förstår deras situation och att vi har en tydlig metodik
+för att ta dem från "AI-kaos" till verklig affärsnytta.
+
+ÖNSKAD TON
+----------
+Professionell men jordnära. Inga floskler. Konkret och förtroendeingivande.
+Vi vill känna att ni förstår logistikverksamhet och att ni inte säljer en
+one-size-fits-all-lösning.
+
+PRAKTISK INFO
+-------------
+- Möteslängd: 45 minuter
+- Format: PowerPoint-presentation, ca 10-12 slides
+- Språk: Svenska
+- Kontaktperson: Anna Reinholt, COO, anna.reinholt@reinholtlogistik.se

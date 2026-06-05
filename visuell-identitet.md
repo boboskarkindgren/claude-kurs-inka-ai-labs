@@ -32,6 +32,24 @@ Känslan är **varm men professionell** – orangen `#D95818` signalerar energi 
 
 Ren. Modern. Trovärdig. Varm men seriös. Framåtlutad.
 
+## Navbar / Header
+
+Navbaren använder organiska blob-former som bakgrund – inspirerat av hemsidans hero-sektion.
+
+**Bakgrundsfärg:** `#C94E10` (mörkare orange bas)
+
+**Blob-lager (SVG):**
+- Stor gyllengul våg: `#E8950A` med opacity 0.75 – skapar rörelse och värme
+- Beige stänk övre vänster: `#FDFAF1` med opacity 0.18 – mjuk koppling till sidans bakgrundsfärg
+- Vinröd cirkel nedre höger: `#8B1A1A` med opacity 0.55 – tyngd och kontrast
+- Extra ljusorange accent-våg: `#F0A030` med opacity 0.35
+
+**Text och logotyp:** vit (`#FFFFFF`) och halvtransparent vit för undertext (`rgba(255,255,255,0.65)`)
+
+**Känsla:** Organisk, varm, rörlig – signalerar kreativitet och energi utan att vara skrikig.
+
+**Implementation:** Inline SVG med `viewBox="0 0 1200 80"` och `preserveAspectRatio="xMidYMid slice"` placerat som absolut bakgrundslager. Navbar-innehåll får `position: relative; z-index: 1`.
+
 ## Riktlinjer för framtida material
 
 - Håll vita ytor – undvik att packa material för tätt

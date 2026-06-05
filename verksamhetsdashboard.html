@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INKA AI Labs – Verksamhetsdashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange:    #D95818;
+    --dark-red:  #640D02;
+    --offwhite:  #FDFAF1;
+    --yellow:    #FFF2D9;
+    --offblack:  #2B2B2B;
+    --white:     #FFFFFF;
+    --surface:   #FFFFFF;
+    --border:    #E8E0D0;
+    --text-muted:#8A8A8A;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--offwhite);
+    color: var(--offblack);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: #C94E10;
+    border-bottom: none;
+    padding: 20px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow: hidden;
+  }
+
+  header svg.blobs {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+
+  .header-left { display: flex; align-items: center; gap: 20px; position: relative; z-index: 1; }
+  .header-right { position: relative; z-index: 1; }
+
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: var(--orange);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; color: white;
+  }
+
+  .logo-text { font-size: 14px; font-weight: 700; letter-spacing: 2px; color: var(--white); }
+  .logo-sub  { font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 1px; }
+
+  .header-right { text-align: right; }
+  .header-title { font-size: 18px; font-weight: 700; color: var(--white); }
+  .header-period { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 3px; }
+
+  /* ── CONTAINER ── */
+  .container { max-width: 1280px; margin: 0 auto; padding: 40px 48px; }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--dark-red);
+    margin-bottom: 16px;
+  }
+
+  /* ── KPI GRID ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 18px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(43,43,43,0.06);
+  }
+
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--border);
+  }
+  .kpi-card.good::before  { background: var(--orange); }
+  .kpi-card.warn::before  { background: var(--dark-red); }
+  .kpi-card.danger::before { background: var(--dark-red); }
+
+  .kpi-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 10px; }
+  .kpi-value { font-size: 24px; font-weight: 800; color: var(--offblack); line-height: 1; }
+  .kpi-delta { font-size: 11px; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+  .kpi-delta.up    { color: var(--orange); }
+  .kpi-delta.down  { color: var(--dark-red); }
+  .kpi-delta.warn  { color: var(--dark-red); }
+
+  /* ── ALERT ── */
+  .alert {
+    background: var(--yellow);
+    border: 1px solid #E8D0B0;
+    border-left: 3px solid var(--orange);
+    border-radius: 8px;
+    padding: 14px 20px;
+    font-size: 13px;
+    color: var(--offblack);
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+  .alert strong { color: var(--orange); }
+
+  /* ── CHARTS ── */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(43,43,43,0.06);
+  }
+  .chart-card.full { grid-column: 1 / -1; }
+
+  .chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .chart-title { font-size: 13px; font-weight: 600; color: var(--offblack); }
+  .chart-badge {
+    font-size: 10px; font-weight: 600;
+    padding: 3px 9px; border-radius: 20px;
+    background: var(--yellow);
+    color: var(--dark-red);
+    border: 1px solid #E8D0B0;
+  }
+
+  /* ── ANALYSIS ── */
+  .analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .analysis-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(43,43,43,0.06);
+  }
+
+  .analysis-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px; padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .analysis-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .analysis-dot.green  { background: var(--orange); }
+  .analysis-dot.orange { background: var(--dark-red); }
+  .analysis-dot.white  { background: var(--offblack); }
+
+  .analysis-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .analysis-title.green  { color: var(--orange); }
+  .analysis-title.orange { color: var(--dark-red); }
+  .analysis-title.white  { color: var(--offblack); }
+
+  .analysis-card ul { list-style: none; }
+  .analysis-card ul li {
+    font-size: 13px; color: #4A4A4A;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.55;
+    display: flex; gap: 8px;
+  }
+  .analysis-card ul li:last-child { border-bottom: none; padding-bottom: 0; }
+  .analysis-card ul li::before {
+    content: "→";
+    color: var(--orange);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 20px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--offwhite);
+  }
+
+  .footer-brand { color: var(--orange); font-weight: 600; }
+
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .charts-grid, .analysis-grid { grid-template-columns: 1fr; }
+    .chart-card.full { grid-column: 1; }
+    header, .container, footer { padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <!-- Organic blob background -->
+  <svg class="blobs" viewBox="0 0 1200 80" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="80" fill="#C94E10"/>
+    <!-- Large golden yellow wave -->
+    <path d="M-50,80 C100,-20 300,90 500,20 C650,-30 700,60 850,10 C950,-20 1000,50 1200,0 L1200,80 Z" fill="#E8950A" opacity="0.75"/>
+    <!-- Beige top-left splash -->
+    <ellipse cx="-20" cy="10" rx="180" ry="90" fill="#FDFAF1" opacity="0.18"/>
+    <!-- Reddish circle bottom-right -->
+    <ellipse cx="1130" cy="95" rx="90" ry="70" fill="#8B1A1A" opacity="0.55"/>
+    <!-- Subtle lighter orange accent -->
+    <path d="M400,80 C480,30 560,70 680,25 C760,0 820,50 950,30 L950,80 Z" fill="#F0A030" opacity="0.35"/>
+  </svg>
+  <div class="header-left">
+    <div class="logo-mark">I</div>
+    <div>
+      <div class="logo-text">INKA AI LABS</div>
+      <div class="logo-sub">AI-byrå i Malmö</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="header-title">Verksamhetsdashboard</div>
+    <div class="header-period">Januari – Juni 2026</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- KPI CARDS -->
+  <div class="section-label">Nyckeltal</div>
+  <div class="kpi-grid">
+    <div class="kpi-card good">
+      <div class="kpi-label">Total intäkt</div>
+      <div class="kpi-value">1,99 Mkr</div>
+      <div class="kpi-delta up">↑ +44,6% jan→jun</div>
+    </div>
+    <div class="kpi-card warn">
+      <div class="kpi-label">Bruttomarginal</div>
+      <div class="kpi-value">30,8%</div>
+      <div class="kpi-delta warn">↓ Kostnadstryck</div>
+    </div>
+    <div class="kpi-card good">
+      <div class="kpi-label">Aktiva kunder</div>
+      <div class="kpi-value">14</div>
+      <div class="kpi-delta up">↑ +133% sedan jan</div>
+    </div>
+    <div class="kpi-card good">
+      <div class="kpi-label">NPS (juni)</div>
+      <div class="kpi-value">65</div>
+      <div class="kpi-delta up">↑ Från 52 i januari</div>
+    </div>
+    <div class="kpi-card good">
+      <div class="kpi-label">Fakturerade tim.</div>
+      <div class="kpi-value">2 358 h</div>
+      <div class="kpi-delta up">↑ +42,6% jan→jun</div>
+    </div>
+    <div class="kpi-card warn">
+      <div class="kpi-label">Kostnader (jun)</div>
+      <div class="kpi-value">268 tkr</div>
+      <div class="kpi-delta warn">↑ +35,4% sedan jan</div>
+    </div>
+  </div>
+
+  <!-- ALERT -->
+  <div class="alert">
+    <strong>Mars 2026 – avvikande månad.</strong>
+    Bruttomarginalen sjönk till 19,8% – den lägsta under perioden. Intäkterna minskade med 14% mot februari
+    medan kostnaderna fortsatte öka. April visade tydlig återhämtning – troligen en tillfällig störning, inte en strukturell trend.
+  </div>
+
+  <!-- CHARTS -->
+  <div class="section-label">Trender</div>
+  <div class="charts-grid">
+
+    <div class="chart-card full">
+      <div class="chart-header">
+        <div class="chart-title">Intäkter vs Kostnader (SEK)</div>
+        <div class="chart-badge">6 månader</div>
+      </div>
+      <canvas id="intakterChart" height="70"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">Bruttomarginal (%)</div>
+        <div class="chart-badge">Mål: 32%</div>
+      </div>
+      <canvas id="marginalChart" height="150"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">Kunder</div>
+        <div class="chart-badge">Aktiva + nya</div>
+      </div>
+      <canvas id="kundChart" height="150"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">Fakturerade timmar</div>
+        <div class="chart-badge">Per månad</div>
+      </div>
+      <canvas id="timmarChart" height="150"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">Kundnöjdhet NPS</div>
+        <div class="chart-badge">0–100</div>
+      </div>
+      <canvas id="npsChart" height="150"></canvas>
+    </div>
+
+  </div>
+
+  <!-- ANALYSIS -->
+  <div class="section-label">Analys</div>
+  <div class="analysis-grid">
+
+    <div class="analysis-card">
+      <div class="analysis-header">
+        <div class="analysis-dot green"></div>
+        <div class="analysis-title green">Vad går bra</div>
+      </div>
+      <ul>
+        <li>Intäkterna har vuxit 44,6% från januari till juni</li>
+        <li>Aktiva kunder mer än fördubblades (6 → 14)</li>
+        <li>NPS förbättrades varje enskild månad (52 → 65)</li>
+        <li>Fakturerade timmar ökar stadigt (+43%)</li>
+        <li>Tydlig återhämtning i april efter marssvackan</li>
+      </ul>
+    </div>
+
+    <div class="analysis-card">
+      <div class="analysis-header">
+        <div class="analysis-dot orange"></div>
+        <div class="analysis-title orange">Behöver uppmärksamhet</div>
+      </div>
+      <ul>
+        <li>Kostnaderna ökar snabbare än intäkterna</li>
+        <li>Mars: 19,8% marginal – lägsta under perioden</li>
+        <li>Snittomarginalen 30,8% riskerar att falla under 30%</li>
+        <li>Ojämnt inflöde av nya kunder (1–4 per månad)</li>
+      </ul>
+    </div>
+
+    <div class="analysis-card">
+      <div class="analysis-header">
+        <div class="analysis-dot white"></div>
+        <div class="analysis-title white">Rekommendationer</div>
+      </div>
+      <ul>
+        <li>Analysera kostnadsstrukturen – identifiera drivarna</li>
+        <li>Sätt marginalmål på min. 32% och följ månadsvis</li>
+        <li>Bygg en pipeline-rutin för jämnare kundflöde</li>
+        <li>Dokumentera marsorsaken för att undvika upprepning</li>
+        <li>Kapitalisera på NPS 65 – be om case studies och refs</li>
+      </ul>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <div><span class="footer-brand">INKA AI Labs</span> · Verksamhetsdashboard · Juni 2026</div>
+  <div>Genererad av dataanalytiker-agenten</div>
+</footer>
+
+<script>
+const månader = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun'];
+const intäkter = [285000, 312000, 268000, 334000, 378000, 412000];
+const kostnader = [198000, 210000, 215000, 228000, 245000, 268000];
+const marginaler = [30.5, 32.7, 19.8, 31.7, 35.2, 34.9];
+const aktivaKunder = [6, 8, 8, 9, 12, 14];
+const nyaKunder = [2, 3, 1, 2, 4, 3];
+const timmar = [340, 380, 310, 398, 445, 485];
+const nps = [52, 55, 48, 58, 62, 65];
+
+Chart.defaults.color = '#8A8A8A';
+Chart.defaults.font.family = 'Inter';
+Chart.defaults.font.size = 11;
+
+const grid = { color: 'rgba(43,43,43,0.07)' };
+const ticks = { color: '#8A8A8A' };
+
+const baseScales = {
+  x: { grid, ticks },
+  y: { grid, ticks: { ...ticks, callback: v => v >= 1000 ? (v/1000) + 'k' : v } }
+};
+
+// Intäkter vs Kostnader
+new Chart(document.getElementById('intakterChart'), {
+  type: 'bar',
+  data: {
+    labels: månader,
+    datasets: [
+      { label: 'Intäkter', data: intäkter, backgroundColor: '#D95818', borderRadius: 5, borderSkipped: false },
+      { label: 'Kostnader', data: kostnader, backgroundColor: 'rgba(100,13,2,0.6)', borderRadius: 5, borderSkipped: false }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { labels: { color: '#A0A0A0', boxWidth: 12 } } },
+    scales: baseScales
+  }
+});
+
+// Marginal
+new Chart(document.getElementById('marginalChart'), {
+  type: 'line',
+  data: {
+    labels: månader,
+    datasets: [{
+      label: 'Marginal %',
+      data: marginaler,
+      borderColor: '#D95818',
+      backgroundColor: 'rgba(217,88,24,0.08)',
+      borderWidth: 2,
+      pointBackgroundColor: marginaler.map(v => v < 25 ? '#EF4444' : '#D95818'),
+      pointBorderColor: marginaler.map(v => v < 25 ? '#EF4444' : '#D95818'),
+      pointRadius: 5,
+      fill: true,
+      tension: 0.4,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      annotation: {
+        annotations: {
+          goal: {
+            type: 'line',
+            yMin: 32, yMax: 32,
+            borderColor: 'rgba(255,255,255,0.2)',
+            borderWidth: 1,
+            borderDash: [4, 4],
+          }
+        }
+      }
+    },
+    scales: { ...baseScales, y: { ...baseScales.y, min: 0, max: 45, ticks: { ...ticks, callback: v => v + '%' } } }
+  }
+});
+
+// Kunder
+new Chart(document.getElementById('kundChart'), {
+  type: 'bar',
+  data: {
+    labels: månader,
+    datasets: [
+      { label: 'Aktiva', data: aktivaKunder, backgroundColor: '#D95818', borderRadius: 5, borderSkipped: false },
+      { label: 'Nya', data: nyaKunder, backgroundColor: 'rgba(100,13,2,0.5)', borderRadius: 5, borderSkipped: false }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { labels: { color: '#A0A0A0', boxWidth: 12 } } },
+    scales: baseScales
+  }
+});
+
+// Timmar
+new Chart(document.getElementById('timmarChart'), {
+  type: 'line',
+  data: {
+    labels: månader,
+    datasets: [{
+      label: 'Timmar',
+      data: timmar,
+      borderColor: '#640D02',
+      backgroundColor: 'rgba(100,13,2,0.06)',
+      borderWidth: 2,
+      pointBackgroundColor: '#640D02',
+      pointRadius: 4,
+      fill: true,
+      tension: 0.4,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: baseScales
+  }
+});
+
+// NPS
+new Chart(document.getElementById('npsChart'), {
+  type: 'line',
+  data: {
+    labels: månader,
+    datasets: [{
+      label: 'NPS',
+      data: nps,
+      borderColor: '#D95818',
+      backgroundColor: 'rgba(217,88,24,0.07)',
+      borderWidth: 2,
+      pointBackgroundColor: '#D95818',
+      pointRadius: 4,
+      fill: true,
+      tension: 0.4,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: { ...baseScales, y: { ...baseScales.y, min: 0, max: 100 } }
+  }
+});
+</script>
+</body>
+</html>
