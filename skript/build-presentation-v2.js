@@ -782,7 +782,7 @@ async function build() {
   // ─────────────────────────────────────────────
   // SAVE
   // ─────────────────────────────────────────────
-  const outPath = "C:\\Users\\kindg\\OneDrive\\Dokument\\Claude kurs - INKA AI Labs\\reinholt-logistik-v2.pptx";
+  const outPath = "C:\\Users\\kindg\\OneDrive\\Dokument\\Claude kurs - INKA AI Labs\\output\\reinholt-logistik-v2.pptx";
   await pres.writeFile({ fileName: outPath });
   console.log("Presentation sparad:", outPath);
 }
